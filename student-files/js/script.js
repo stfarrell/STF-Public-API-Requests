@@ -3,6 +3,7 @@ const body = document.querySelector('body');
 const gallery = document.querySelector('#gallery');
 const url = 'https://randomuser.me/api/?results=12&nat=us';
 let data;
+let cards;
 
 async function getData(url) {
 	data = await fetch(url);
@@ -13,7 +14,7 @@ async function getData(url) {
 
 function displayData(data) {
 	console.log(data);
-
+	gallery.innerHTML = '';
 	data.forEach((person) => {
 		const card = document.createElement('div');
 		card.classList.add('card');
@@ -47,7 +48,7 @@ function displayData(data) {
 		cardInfoContainer.appendChild(address);
 	});
 
-	const cards = document.querySelectorAll('.card');
+	cards = document.querySelectorAll('.card');
 	cards.forEach((card) => {
 		card.addEventListener('click', (e) => {
 			console.log('clicked');
@@ -150,7 +151,30 @@ function displayData(data) {
 			modalDOB.innerText = modalDOBValue;
 			modalInfoContainer.appendChild(modalDOB);
 
-			console.log(e.target);
+			const modalBtnContainer = document.createElement('div');
+			modalBtnContainer.classList.add('modal-btn-container');
+			modal.appendChild(modalBtnContainer);
+
+			const modalPrev = document.createElement('button');
+			modalPrev.type = 'button';
+			modalPrev.id = 'modal-prev';
+			modalPrev.classList.add('modal-prev', 'btn');
+			modalPrev.innerText = 'Prev';
+			modalBtnContainer.appendChild(modalPrev);
+
+			const modalNext = document.createElement('button');
+			modalNext.type = 'button';
+			modalNext.id = 'modal-next';
+			modalNext.classList.add('modal-next', 'btn');
+			modalNext.innerText = 'Next';
+			modalBtnContainer.appendChild(modalNext);
+
+			modalPrev.addEventListener('click', (e) => {
+				console.log('hi');
+			});
+			modalNext.addEventListener('click', (e) => {
+				console.log('ho');
+			});
 		});
 	});
 }
@@ -163,10 +187,6 @@ function birthdayHelper(date) {
 	console.log(extractedDate);
 	return extractedDate;
 }
-
-// function phoneHelper(num) {
-// 	let numParts = num.split('-');
-// }
 
 const searchContainer = document.querySelector('.search-container');
 const searchForm = document.createElement('form');
@@ -181,25 +201,32 @@ searchBar.classList.add('search-input');
 searchBar.placeholder = 'Search...';
 searchForm.appendChild(searchBar);
 
-const searchSubmit = document.createElement('input');
-searchSubmit.type = 'submit';
-searchSubmit.value = '&#127859;';
+const searchSubmit = document.createElement('button');
+//searchSubmit.type = 'submit';
+searchSubmit.innerHTML = '&#x1F50D;';
 searchSubmit.id = 'search-submit';
 searchSubmit.classList.add('search-submit');
 searchForm.appendChild(searchSubmit);
 
 searchSubmit.addEventListener('click', (e) => {
 	const searchData = data.filter((person) => {
-		console.log(
-			person.name.first.toUpperCase(),
-			'**',
-			searchBar.value.toUpperCase()
-		);
-		person.name.first.toUpperCase().includes(searchBar.value.toUpperCase()) ||
-			person.name.last.toUpperCase().includes(searchBar.value.toUpperCase()) ||
-			person.name.title.toUpperCase().includes(searchBar.value.toUpperCase());
+		const fullName =
+			person.name.title + ' ' + person.name.first + ' ' + person.name.last;
+		if (fullName.toUpperCase().includes(searchBar.value.toUpperCase())) {
+			return person;
+		}
 	});
+	displayData(searchData);
+});
 
+searchBar.addEventListener('keyup', (e) => {
+	const searchData = data.filter((person) => {
+		const fullName =
+			person.name.title + ' ' + person.name.first + ' ' + person.name.last;
+		if (fullName.toUpperCase().includes(searchBar.value.toUpperCase())) {
+			return person;
+		}
+	});
 	displayData(searchData);
 });
 
