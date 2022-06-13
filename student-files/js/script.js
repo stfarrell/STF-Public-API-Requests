@@ -196,6 +196,10 @@ function createModal(index) {
 			modalContainer.style.display = 'none';
 			currentPersonIndex -= 1;
 			createModal(currentPersonIndex);
+		} else {
+			modalContainer.style.display = 'none';
+			currentPersonIndex = searchData.length - 1;
+			createModal(currentPersonIndex);
 		}
 	});
 
@@ -203,6 +207,10 @@ function createModal(index) {
 		if (currentPersonIndex < searchData.length - 1) {
 			modalContainer.style.display = 'none';
 			currentPersonIndex += 1;
+			createModal(currentPersonIndex);
+		} else {
+			modalContainer.style.display = 'none';
+			currentPersonIndex = 0;
 			createModal(currentPersonIndex);
 		}
 	});
