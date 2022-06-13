@@ -5,6 +5,7 @@ const url = 'https://randomuser.me/api/?results=12&nat=us';
 let data;
 let searchData;
 let cards;
+let currentPersonIndex;
 
 async function getData(url) {
 	data = await fetch(url);
@@ -64,119 +65,10 @@ function displayData(data) {
 			const imgCheck = card.firstElementChild.firstElementChild.src;
 			data.forEach((person) => {
 				if (person.picture.large === imgCheck) {
-					console.log(data.indexOf(person));
-					//declare modal values
-					modalNameValue =
-						person.name.title +
-						' ' +
-						person.name.first +
-						' ' +
-						person.name.last;
-					modalEmailValue = person.email;
-					modalCityValue = person.location.city;
-					modalAddressValue =
-						person.location.street.number +
-						' ' +
-						person.location.street.name +
-						', ' +
-						person.location.city +
-						', ' +
-						person.location.state +
-						', ' +
-						person.location.postcode;
-					modalPhoneValue = person.phone;
-
-					modalDOBValue = 'Birthday ' + birthdayHelper(person.dob.date);
+					currentPersonIndex = data.indexOf(person);
+					console.log(currentPersonIndex);
+					createModal(currentPersonIndex);
 				}
-			});
-
-			const modalContainer = document.createElement('div');
-			modalContainer.classList.add('modal-container');
-			body.appendChild(modalContainer);
-			const modal = document.createElement('div');
-			modal.classList.add('modal');
-			modalContainer.appendChild(modal);
-
-			const modalCloseButton = document.createElement('button');
-			modalCloseButton.type = 'button';
-			modalCloseButton.classList.add('modal-close-btn');
-			modalCloseButton.id = 'modal-close-btn';
-			const strong = document.createElement('strong');
-			strong.innerText = 'X';
-			modalCloseButton.appendChild(strong);
-			modal.appendChild(modalCloseButton);
-			modalCloseButton.addEventListener('click', (e) => {
-				modalContainer.style.display = 'none';
-			});
-
-			const modalInfoContainer = document.createElement('div');
-			modalInfoContainer.classList.add('modal-info-container');
-			modal.appendChild(modalInfoContainer);
-
-			const modalImage = document.createElement('img');
-			modalImage.classList.add('modal-img');
-			modalImage.alt = 'profile picture';
-			modalImage.src = imgCheck;
-			modalInfoContainer.appendChild(modalImage);
-
-			modalName = document.createElement('h3');
-			modalName.classList.add('modal-name', 'cap');
-			modalName.id = 'name';
-			modalName.innerText = modalNameValue;
-			modalInfoContainer.appendChild(modalName);
-
-			const modalEmail = document.createElement('p');
-			modalEmail.classList.add('modal-text');
-			modalEmail.innerText = modalEmailValue;
-			modalInfoContainer.appendChild(modalEmail);
-
-			const modalCity = document.createElement('p');
-			modalCity.classList.add('modal-text', 'cap');
-			modalCity.innerText = modalCityValue;
-			modalInfoContainer.appendChild(modalCity);
-
-			const midline = document.createElement('hr');
-			modalInfoContainer.appendChild(midline);
-
-			const modalPhone = document.createElement('p');
-			modalPhone.classList.add('modal-text');
-			modalPhone.innerText = modalPhoneValue;
-			modalInfoContainer.appendChild(modalPhone);
-
-			const modalAddress = document.createElement('p');
-			modalAddress.classList.add('modal-text');
-			modalAddress.innerText = modalAddressValue;
-			modalInfoContainer.appendChild(modalAddress);
-
-			const modalDOB = document.createElement('p');
-			modalDOB.classList.add('modal-text');
-			modalDOB.innerText = modalDOBValue;
-			modalInfoContainer.appendChild(modalDOB);
-
-			const modalBtnContainer = document.createElement('div');
-			modalBtnContainer.classList.add('modal-btn-container');
-			modal.appendChild(modalBtnContainer);
-
-			const modalPrev = document.createElement('button');
-			modalPrev.type = 'button';
-			modalPrev.id = 'modal-prev';
-			modalPrev.classList.add('modal-prev', 'btn');
-			modalPrev.innerText = 'Prev';
-			modalBtnContainer.appendChild(modalPrev);
-
-			const modalNext = document.createElement('button');
-			modalNext.type = 'button';
-			modalNext.id = 'modal-next';
-			modalNext.classList.add('modal-next', 'btn');
-			modalNext.innerText = 'Next';
-			modalBtnContainer.appendChild(modalNext);
-
-			modalPrev.addEventListener('click', (e) => {
-				console.log('hi');
-			});
-
-			modalNext.addEventListener('click', (e) => {
-				console.log('ho');
 			});
 		});
 	});
@@ -232,5 +124,126 @@ searchBar.addEventListener('keyup', (e) => {
 	});
 	displayData(searchData);
 });
+
+function createModal(index) {
+	const person = searchData[index];
+	modalImageValue = person.picture.large;
+	modalNameValue =
+		person.name.title + ' ' + person.name.first + ' ' + person.name.last;
+	modalEmailValue = person.email;
+	modalCityValue = person.location.city;
+	modalAddressValue =
+		person.location.street.number +
+		' ' +
+		person.location.street.name +
+		', ' +
+		person.location.city +
+		', ' +
+		person.location.state +
+		', ' +
+		person.location.postcode;
+	modalPhoneValue = person.phone;
+
+	modalDOBValue = 'Birthday ' + birthdayHelper(person.dob.date);
+
+	const modalContainer = document.createElement('div');
+	modalContainer.classList.add('modal-container');
+	body.appendChild(modalContainer);
+	const modal = document.createElement('div');
+	modal.classList.add('modal');
+	modalContainer.appendChild(modal);
+
+	const modalCloseButton = document.createElement('button');
+	modalCloseButton.type = 'button';
+	modalCloseButton.classList.add('modal-close-btn');
+	modalCloseButton.id = 'modal-close-btn';
+	const strong = document.createElement('strong');
+	strong.innerText = 'X';
+	modalCloseButton.appendChild(strong);
+	modal.appendChild(modalCloseButton);
+	modalCloseButton.addEventListener('click', (e) => {
+		modalContainer.style.display = 'none';
+	});
+
+	const modalInfoContainer = document.createElement('div');
+	modalInfoContainer.classList.add('modal-info-container');
+	modal.appendChild(modalInfoContainer);
+
+	const modalImage = document.createElement('img');
+	modalImage.classList.add('modal-img');
+	modalImage.alt = 'profile picture';
+	modalImage.src = modalImageValue;
+	modalInfoContainer.appendChild(modalImage);
+
+	modalName = document.createElement('h3');
+	modalName.classList.add('modal-name', 'cap');
+	modalName.id = 'name';
+	modalName.innerText = modalNameValue;
+	modalInfoContainer.appendChild(modalName);
+
+	const modalEmail = document.createElement('p');
+	modalEmail.classList.add('modal-text');
+	modalEmail.innerText = modalEmailValue;
+	modalInfoContainer.appendChild(modalEmail);
+
+	const modalCity = document.createElement('p');
+	modalCity.classList.add('modal-text', 'cap');
+	modalCity.innerText = modalCityValue;
+	modalInfoContainer.appendChild(modalCity);
+
+	const midline = document.createElement('hr');
+	modalInfoContainer.appendChild(midline);
+
+	const modalPhone = document.createElement('p');
+	modalPhone.classList.add('modal-text');
+	modalPhone.innerText = modalPhoneValue;
+	modalInfoContainer.appendChild(modalPhone);
+
+	const modalAddress = document.createElement('p');
+	modalAddress.classList.add('modal-text');
+	modalAddress.innerText = modalAddressValue;
+	modalInfoContainer.appendChild(modalAddress);
+
+	const modalDOB = document.createElement('p');
+	modalDOB.classList.add('modal-text');
+	modalDOB.innerText = modalDOBValue;
+	modalInfoContainer.appendChild(modalDOB);
+
+	const modalBtnContainer = document.createElement('div');
+	modalBtnContainer.classList.add('modal-btn-container');
+	modal.appendChild(modalBtnContainer);
+
+	const modalPrev = document.createElement('button');
+	modalPrev.type = 'button';
+	modalPrev.id = 'modal-prev';
+	modalPrev.classList.add('modal-prev', 'btn');
+	modalPrev.innerText = 'Prev';
+	modalBtnContainer.appendChild(modalPrev);
+
+	const modalNext = document.createElement('button');
+	modalNext.type = 'button';
+	modalNext.id = 'modal-next';
+	modalNext.classList.add('modal-next', 'btn');
+	modalNext.innerText = 'Next';
+	modalBtnContainer.appendChild(modalNext);
+
+	modalPrev.addEventListener('click', (e) => {
+		console.log('hi');
+		if (currentPersonIndex > 0) {
+			modalContainer.style.display = 'none';
+			currentPersonIndex -= 1;
+			createModal(currentPersonIndex);
+		}
+	});
+
+	modalNext.addEventListener('click', (e) => {
+		console.log('ho');
+		if (currentPersonIndex < searchData.length - 1) {
+			modalContainer.style.display = 'none';
+			currentPersonIndex += 1;
+			createModal(currentPersonIndex);
+		}
+	});
+}
 
 getData(url);
