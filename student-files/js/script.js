@@ -1,4 +1,6 @@
+//Make sure we're connected!
 console.log('test');
+//Declare some important global variables and api request url
 const body = document.querySelector('body');
 const gallery = document.querySelector('#gallery');
 const url = 'https://randomuser.me/api/?results=12&nat=us';
@@ -7,16 +9,21 @@ let searchData;
 let cards;
 let currentPersonIndex;
 
+//Get the data!
 async function getData(url) {
-	data = await fetch(url);
-	data = await data.json();
+	data = await fetch(url).catch((error) =>
+		console.log('uh oh spaghettio', error)
+	);
+	data = await data
+		.json()
+		.catch((error) => console.log('uh oh spaghettio', error));
 	data = await data.results;
 	searchData = await data;
 	displayData(data);
 }
 
+//Display the data as cards + add modal on click functionality
 function displayData(data) {
-	console.log(data);
 	gallery.innerHTML = '';
 	data.forEach((person) => {
 		const card = document.createElement('div');
@@ -54,19 +61,16 @@ function displayData(data) {
 	cards = document.querySelectorAll('.card');
 	cards.forEach((card) => {
 		card.addEventListener('click', (e) => {
-			console.log('clicked');
 			let modalNameValue;
 			let modalEmailValue;
 			let modalCityValue;
 			let modalAddressValue;
 			let modalPhoneValue;
 			let modalDOBValue;
-			//grab something
 			const imgCheck = card.firstElementChild.firstElementChild.src;
 			data.forEach((person) => {
 				if (person.picture.large === imgCheck) {
 					currentPersonIndex = data.indexOf(person);
-					console.log(currentPersonIndex);
 					createModal(currentPersonIndex);
 				}
 			});
@@ -74,57 +78,16 @@ function displayData(data) {
 	});
 }
 
+//Help write the correct format for birthday
 function birthdayHelper(date) {
 	let extractedDate = date.substring(0, 10);
 	extractedDate = extractedDate.split('-');
 	extractedDate =
 		extractedDate[1] + '/' + extractedDate[2] + '/' + extractedDate[0];
-	console.log(extractedDate);
 	return extractedDate;
 }
 
-const searchContainer = document.querySelector('.search-container');
-const searchForm = document.createElement('form');
-searchForm.action = '#';
-searchForm.method = 'GET';
-searchContainer.appendChild(searchForm);
-
-const searchBar = document.createElement('input');
-searchBar.type = 'search';
-searchBar.id = 'search-input';
-searchBar.classList.add('search-input');
-searchBar.placeholder = 'Search...';
-searchForm.appendChild(searchBar);
-
-const searchSubmit = document.createElement('button');
-//searchSubmit.type = 'submit';
-searchSubmit.innerHTML = '&#x1F50D;';
-searchSubmit.id = 'search-submit';
-searchSubmit.classList.add('search-submit');
-searchForm.appendChild(searchSubmit);
-
-searchSubmit.addEventListener('click', (e) => {
-	searchData = data.filter((person) => {
-		const fullName =
-			person.name.title + ' ' + person.name.first + ' ' + person.name.last;
-		if (fullName.toUpperCase().includes(searchBar.value.toUpperCase())) {
-			return person;
-		}
-	});
-	displayData(searchData);
-});
-
-searchBar.addEventListener('keyup', (e) => {
-	searchData = data.filter((person) => {
-		const fullName =
-			person.name.title + ' ' + person.name.first + ' ' + person.name.last;
-		if (fullName.toUpperCase().includes(searchBar.value.toUpperCase())) {
-			return person;
-		}
-	});
-	displayData(searchData);
-});
-
+//Create a modal for the data at a given index
 function createModal(index) {
 	const person = searchData[index];
 	modalImageValue = person.picture.large;
@@ -227,8 +190,8 @@ function createModal(index) {
 	modalNext.innerText = 'Next';
 	modalBtnContainer.appendChild(modalNext);
 
+	//Modal toggle buttons =)
 	modalPrev.addEventListener('click', (e) => {
-		console.log('hi');
 		if (currentPersonIndex > 0) {
 			modalContainer.style.display = 'none';
 			currentPersonIndex -= 1;
@@ -237,7 +200,6 @@ function createModal(index) {
 	});
 
 	modalNext.addEventListener('click', (e) => {
-		console.log('ho');
 		if (currentPersonIndex < searchData.length - 1) {
 			modalContainer.style.display = 'none';
 			currentPersonIndex += 1;
@@ -245,5 +207,48 @@ function createModal(index) {
 		}
 	});
 }
+//Declare + create variables for search bar
+const searchContainer = document.querySelector('.search-container');
+const searchForm = document.createElement('form');
+searchForm.action = '#';
+searchForm.method = 'GET';
+searchContainer.appendChild(searchForm);
 
+const searchBar = document.createElement('input');
+searchBar.type = 'search';
+searchBar.id = 'search-input';
+searchBar.classList.add('search-input');
+searchBar.placeholder = 'Search...';
+searchForm.appendChild(searchBar);
+
+const searchSubmit = document.createElement('button');
+searchSubmit.innerHTML = '&#x1F50D;';
+searchSubmit.id = 'search-submit';
+searchSubmit.classList.add('search-submit');
+searchForm.appendChild(searchSubmit);
+
+//Filter results upon search when button is clicked or letters typed
+searchSubmit.addEventListener('click', (e) => {
+	searchData = data.filter((person) => {
+		const fullName =
+			person.name.title + ' ' + person.name.first + ' ' + person.name.last;
+		if (fullName.toUpperCase().includes(searchBar.value.toUpperCase())) {
+			return person;
+		}
+	});
+	displayData(searchData);
+});
+
+searchBar.addEventListener('keyup', (e) => {
+	searchData = data.filter((person) => {
+		const fullName =
+			person.name.title + ' ' + person.name.first + ' ' + person.name.last;
+		if (fullName.toUpperCase().includes(searchBar.value.toUpperCase())) {
+			return person;
+		}
+	});
+	displayData(searchData);
+});
+
+//Get the data using the specified url
 getData(url);
