@@ -3,12 +3,14 @@ const body = document.querySelector('body');
 const gallery = document.querySelector('#gallery');
 const url = 'https://randomuser.me/api/?results=12&nat=us';
 let data;
+let searchData;
 let cards;
 
 async function getData(url) {
 	data = await fetch(url);
 	data = await data.json();
 	data = await data.results;
+	searchData = await data;
 	displayData(data);
 }
 
@@ -62,7 +64,7 @@ function displayData(data) {
 			const imgCheck = card.firstElementChild.firstElementChild.src;
 			data.forEach((person) => {
 				if (person.picture.large === imgCheck) {
-					console.log('checked');
+					console.log(data.indexOf(person));
 					//declare modal values
 					modalNameValue =
 						person.name.title +
@@ -172,6 +174,7 @@ function displayData(data) {
 			modalPrev.addEventListener('click', (e) => {
 				console.log('hi');
 			});
+
 			modalNext.addEventListener('click', (e) => {
 				console.log('ho');
 			});
@@ -209,7 +212,7 @@ searchSubmit.classList.add('search-submit');
 searchForm.appendChild(searchSubmit);
 
 searchSubmit.addEventListener('click', (e) => {
-	const searchData = data.filter((person) => {
+	searchData = data.filter((person) => {
 		const fullName =
 			person.name.title + ' ' + person.name.first + ' ' + person.name.last;
 		if (fullName.toUpperCase().includes(searchBar.value.toUpperCase())) {
@@ -220,7 +223,7 @@ searchSubmit.addEventListener('click', (e) => {
 });
 
 searchBar.addEventListener('keyup', (e) => {
-	const searchData = data.filter((person) => {
+	searchData = data.filter((person) => {
 		const fullName =
 			person.name.title + ' ' + person.name.first + ' ' + person.name.last;
 		if (fullName.toUpperCase().includes(searchBar.value.toUpperCase())) {
