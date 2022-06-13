@@ -11,15 +11,15 @@ let currentPersonIndex;
 
 //Get the data!
 async function getData(url) {
-	data = await fetch(url).catch((error) =>
-		console.log('uh oh spaghettio', error)
-	);
-	data = await data
-		.json()
-		.catch((error) => console.log('uh oh spaghettio', error));
-	data = await data.results;
-	searchData = await data;
-	displayData(data);
+	try {
+		data = await fetch(url);
+		data = await data.json();
+		data = data.results;
+		searchData = data;
+		displayData(data);
+	} catch (error) {
+		console.log('uh oh spaghettio', error);
+	}
 }
 
 //Display the data as cards + add modal on click functionality
